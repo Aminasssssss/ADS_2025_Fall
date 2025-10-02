@@ -1,63 +1,120 @@
 #include <iostream>
+#include <map>
 #include <cmath>
-#define LL long long
 using namespace std;
 
+map<int, string> routes;
+map<int, int> res;
 
-LL h;
-double arr[100005];
-double n;
+class Node{
+    public:
+    int data, lvl;
+    Node *left, *right;
 
-bool steals(double x) {
-    LL hours = 0;
-    for(int i = 0; i<n; i++) {
-        hours += ceil(arr[i]/x);
+    Node(int data) {
+        this->data = data;
+        this->lvl = 0;
+        this->right = NULL;
+        this->left = NULL;
+    }
+};
 
-        if(hours > h) {
-            return false;
-        }
+class bt{
+    public:
+    Node *root;
+    int sz;
+    
 
+    bt() {
+        root = NULL;
+        sz = 0;
+        
     }
 
-    return true;
 
-}
+    void insert(int x, int y, int z) {
+        if(sz == 0) {
+            Node *n = new Node(x);
+            Node *n_n = new Node(y);
 
-int main() {
-   
-    long long x, max_speed = 0;
-    double min_speed;
-    cin >> n >> h;
 
-    for(int i = 0; i<n; i++) {
-        cin >> x;
-        max_speed = max(max_speed, x);
-        arr[i] = x;
-    }
+            if(z == 0) {
+                n->left = n_n;
+                routes[y]+='L';
+            }
+            else {
+                n->right = n_n;
+                routes[y]+='R';
+            }
 
-    LL l = 1, r = max_speed, mid;
 
-    while(l <= r) {
-        mid = (l+r)/2;
+            res[n->lvl]++;
+            root = n;
+            
+            routes[x] = "";
+            sz++;
 
-        if(steals(mid)) {
-            r = mid - 1;
-            min_speed = mid;
         }
 
         else {
-            l = mid + 1;
-        }
+            Node *tmp = root;
+            Node *n = new Node(y);
+            for(char c : routes[x]) {
+                if(c == 'L') {
+                    tmp = tmp->left;
+                }
+                else {
+                    tmp = tmp->right;
+                }
+                n->lvl++;
+            }
+
+            res[n->lvl + 1]++;
+
+            if(z == 0) {
+                routes[y] = routes[x] + 'L';
+                tmp->left = n;
+
+            }
+
+            else {
+                routes[y] = routes[x] + 'R';
+                tmp->right = n;
+
+            }
+    
+
         
-             
+      }
+
     }
 
-   
-    cout << (min_speed) << endl;
+};
 
-     
+
+int main() {
+    bt tree;
+    int n, x, y, z, mx = 0;
+    cin >> n;
+
+    for(int i = 0; i<n-1; i++) {
+        cin >> x >> y >> z;
+        tree.insert(x,y,z);
+    }
+
+    for(pair<int,int> x : res) {
+        mx = max(mx, x.second);
+    }
+
+    cout << mx;
+
 
 
 
 }
 
+
+
+//        1
+//  3        2
+//5.    6.       4
