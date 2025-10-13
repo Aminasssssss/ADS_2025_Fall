@@ -14,10 +14,18 @@ int main() {
 
     res = arr[0];
 
-    for(int i = 0; i<n; i++) {
-        if(int(arr[i]) > int(tar)) {
-            res = arr[i];
-            break;
+    int l = 0, r = n-1, mid;
+    while(l<=r) {
+        mid = (l+r)/2;
+
+        if(int(arr[mid]) > int(tar)) {
+           
+            res = arr[mid];
+            r = mid - 1;
+        }
+
+        else {
+            l = mid + 1;
         }
     }
 
